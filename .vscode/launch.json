@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // GCC/Clang: macOS (lldb), Linux и MinGW на Windows (gdb).
+            // Отлаживается цель, выбранная в CMake Tools (строка состояния → Launch target)
+            "name": "Отладка (GCC/Clang)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "externalConsole": false,
+            "osx": { "MIMode": "lldb" },
+            "linux": { "MIMode": "gdb" },
+            "windows": { "MIMode": "gdb" }
+        },
+        {
+            // Windows с компилятором MSVC (Visual Studio Build Tools)
+            "name": "Отладка (MSVC)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        }
+    ]
+}

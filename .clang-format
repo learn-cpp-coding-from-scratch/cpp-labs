@@ -1,0 +1,86 @@
+# Конфигурация clang-format курса ОиМП (БГУ, ФПМИ)
+# Основа — стиль Qt с уточнениями курса.
+# Номера пунктов — по документу 0.4_Основы_Code_Style.
+# Требуется clang-format версии 15 или новее (из-за InsertBraces).
+Language: Cpp
+Standard: c++20
+
+# Пункты 2–3: отступы 4 пробела, без табуляции; строка не длиннее 100 символов
+IndentWidth: 4
+UseTab: Never
+AccessModifierOffset: -4
+ColumnLimit: 100
+ContinuationIndentWidth: 4
+
+# Пункт 5a: не более одной пустой строки подряд
+MaxEmptyLinesToKeep: 1
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# Пункты 5b, 6d: пробел после ключевого слова (if, for, while),
+# но не после имени функции
+SpaceBeforeParens: ControlStatements
+
+# Пункт 5c: * и & прижимаются к типу (char* x) — отступление от Qt в пользу Google
+DerivePointerAlignment: false
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+# Пункты 5d–5h: пробелы вокруг операторов присваивания и двоеточий
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+BitFieldColonSpacing: Both
+
+# Пункт 5i: без пробела после приведения типа в стиле C
+SpaceAfterCStyleCast: false
+
+# Пункты 5k, 6a: тело управляющей конструкции — в фигурных скобках,
+# на отдельной строке; никаких нескольких инструкций в одной строке
+InsertBraces: true
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Never
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortLambdasOnASingleLine: All
+
+# Пункты 6b–6c: «присоединённые» скобки для ветвлений и циклов;
+# для классов, структур и функций открывающая скобка — на новой строке
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterCaseLabel: false
+  AfterClass: true
+  AfterControlStatement: Never
+  AfterEnum: false
+  AfterFunction: true
+  AfterNamespace: false
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: false
+  BeforeCatch: false
+  BeforeElse: false
+  BeforeLambdaBody: false
+  IndentBraces: false
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+
+# Пункт 8: при переносе длинного выражения оператор уходит на новую строку
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeTernaryOperators: true
+
+# Пункт 9a: метки case в том же столбце, что и switch
+IndentCaseLabels: false
+
+# Пункт 17c: сортировка включений внутри групп;
+# группы (разделённые пустой строкой) не перемешиваются
+SortIncludes: CaseSensitive
+IncludeBlocks: Preserve
+
+# Прочее в духе стиля Qt
+SpaceAfterTemplateKeyword: false
+Cpp11BracedListStyle: true
+FixNamespaceComments: true
+ReflowComments: true
+AlignAfterOpenBracket: Align
+SpacesBeforeTrailingComments: 1

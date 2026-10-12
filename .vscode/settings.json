@@ -1,0 +1,23 @@
+{
+    // CMake Tools: папки сборки и тип сборки задаются в CMakePresets.json
+    // (build/<пресет>); compile_commands.json выбранного пресета копируется
+    // в build/ — там его находит clangd, если он установлен вместо IntelliSense
+    "cmake.useCMakePresets": "always",
+    "cmake.copyCompileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "cmake.configureOnOpen": true,
+    "cmake.ctest.testExplorerIntegrationEnabled": true,
+
+    // C/C++ от Microsoft: IntelliSense получает флаги компиляции от CMake Tools,
+    // clang-tidy проверяет файлы по .clang-tidy при открытии и сохранении
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.codeAnalysis.clangTidy.enabled": true,
+
+    // Форматирование по .clang-format при сохранении
+    "[cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools",
+        "editor.formatOnSave": true
+    },
+    "files.encoding": "utf8",
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true
+}

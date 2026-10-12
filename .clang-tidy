@@ -1,0 +1,84 @@
+# Конфигурация clang-tidy курса ОиМП (БГУ, ФПМИ)
+# Номера пунктов — по документу 0.4_Основы_Code_Style.
+# Запуск: clang-tidy src/*.cpp -- -std=c++20
+#
+# Состав проверок:
+#   bugprone-*                                    — типичные ошибки
+#   cppcoreguidelines-avoid-goto                  — пункт 11
+#   cppcoreguidelines-avoid-non-const-global-variables — пункт 12
+#   cppcoreguidelines-init-variables              — пункт 4d (инициализация при объявлении)
+#   google-readability-casting                    — пункт 5j (запрет приведения в стиле C)
+#   portability-avoid-pragma-once                 — пункт 17b (запрет #pragma once; clang-tidy 21+)
+#     имя стража по форме MODULE_HPP (CALCULATOR_HPP для calculator.hpp) проверяется при инспекции кода:
+#     llvm-header-guard не подходит — требует имя из полного пути к файлу
+#   misc-definitions-in-headers                   — пункт 18b (реализация — в .cpp)
+#   modernize-*                                   — современный C++ (nullptr, override и др.)
+#   readability-braces-around-statements          — пункт 6a
+#   readability-else-after-return                 — пункт 10 (ранний выход)
+#   readability-identifier-naming                 — пункты 4, 15 (именование)
+#   readability-isolate-declaration               — пункт 4c (одна переменная — одна строка)
+#   readability-magic-numbers                     — пункт 13
+#
+# Отключено:
+#   bugprone-easily-swappable-parameters — слишком «шумная» для учебных работ
+#   bugprone-exception-escape            — срабатывает почти на каждой main со строками; исключения — тема 2.5
+#   modernize-use-trailing-return-type   — курс использует классические сигнатуры
+#   modernize-avoid-c-arrays             — массивы в стиле C изучаются в разделе 2
+
+Checks: >
+  -*,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-exception-escape,
+  cppcoreguidelines-avoid-goto,
+  cppcoreguidelines-avoid-non-const-global-variables,
+  cppcoreguidelines-init-variables,
+  google-readability-casting,
+  portability-avoid-pragma-once,
+  misc-definitions-in-headers,
+  modernize-*,
+  -modernize-use-trailing-return-type,
+  -modernize-avoid-c-arrays,
+  readability-braces-around-statements,
+  readability-else-after-return,
+  readability-identifier-naming,
+  readability-isolate-declaration,
+  readability-magic-numbers
+
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*'
+FormatStyle: file
+
+CheckOptions:
+  # Пункт 13: «магические» числа; разрешены только -1, 0, 1 и 2
+  # (отрицательные значения в списке не указываются: проверка видит литерал
+  #  под унарным минусом, поэтому -1 и -2 проходят вместе с 1 и 2)
+  readability-magic-numbers.IgnoredIntegerValues: '0;1;2'
+  # Пункт 13: дробные литералы; 0.0 проверка пропускает сама
+  readability-magic-numbers.IgnoredFloatingPointValues: '0.5;1.0;2.0'
+  # Пункты 4g, 4h: переменные и функции — camelCase
+  readability-identifier-naming.VariableCase: camelBack
+  readability-identifier-naming.ParameterCase: camelBack
+  readability-identifier-naming.FunctionCase: camelBack
+  readability-identifier-naming.MethodCase: camelBack
+  # Пункт 4i: классы, структуры, перечисления — PascalCase
+  readability-identifier-naming.ClassCase: CamelCase
+  readability-identifier-naming.StructCase: CamelCase
+  readability-identifier-naming.EnumCase: CamelCase
+  readability-identifier-naming.UnionCase: CamelCase
+  # Пункт 4l: пространства имён — строчными буквами
+  readability-identifier-naming.NamespaceCase: lower_case
+  # Пункт 4m: параметры шаблонов — с заглавной буквы
+  readability-identifier-naming.TemplateParameterCase: CamelCase
+  # Пункт 4k: константы и значения перечислений — КАПСОМ_С_ПОДЧЁРКИВАНИЕМ
+  readability-identifier-naming.EnumConstantCase: UPPER_CASE
+  readability-identifier-naming.GlobalConstantCase: UPPER_CASE
+  readability-identifier-naming.StaticConstantCase: UPPER_CASE
+  readability-identifier-naming.ConstexprVariableCase: UPPER_CASE
+  # Пункт 15: private- и protected-поля — camelCase с суффиксом «_», public — без,
+  # статические поля класса — тоже (ClassMember* относится к static-полям)
+  readability-identifier-naming.MemberCase: camelBack
+  readability-identifier-naming.PrivateMemberSuffix: '_'
+  readability-identifier-naming.ProtectedMemberSuffix: '_'
+  readability-identifier-naming.ClassMemberCase: camelBack
+  readability-identifier-naming.ClassMemberSuffix: '_'
