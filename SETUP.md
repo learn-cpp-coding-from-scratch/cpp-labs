@@ -18,7 +18,7 @@
 
 Устанавливайте программы менеджером пакетов, как ниже: так нужные версии ставятся и обновляются командами, без поиска установщиков на разных сайтах.
 
-**Как связаны CMake и Ninja.** Сборка идёт в два этапа. **CMake** читает описание проекта (`CMakeLists.txt`: какие программы, из каких файлов, с какими флагами), находит компилятор и инструменты, находит или скачивает библиотеку тестирования Google Test и пишет подробный план сборки — файл `build.ninja` в папке сборки (для пресета `debug` — `build/debug/build.ninja`). Сам CMake ничего не компилирует. **Ninja** выполняет этот план: запускает компилятор, clang-tidy и компоновщик в нужном порядке, по несколько команд одновременно (по умолчанию — по числу ядер процессора с небольшим запасом) и повторяет только те шаги, результат которых зависит от файлов, изменившихся с прошлой сборки (если не изменилось ничего, он пишет `ninja: no work to do.`). Вручную запускать Ninja не нужно — это делают CMake и VS Code (кнопка **Build**), но установлен он должен быть: настройки проекта (`CMakePresets.json`) указывают именно его.
+**Как связаны CMake и Ninja.** Сборка идёт в два этапа. **CMake** читает описание проекта (`CMakeLists.txt`: какие программы, из каких файлов, с какими флагами), находит компилятор и инструменты, находит или скачивает библиотеки Google Test (тестирование) и spdlog (логирование) и пишет подробный план сборки — файл `build.ninja` в папке сборки (для пресета `debug` — `build/debug/build.ninja`). Сам CMake ничего не компилирует. **Ninja** выполняет этот план: запускает компилятор, clang-tidy и компоновщик в нужном порядке, по несколько команд одновременно (по умолчанию — по числу ядер процессора с небольшим запасом) и повторяет только те шаги, результат которых зависит от файлов, изменившихся с прошлой сборки (если не изменилось ничего, он пишет `ninja: no work to do.`). Вручную запускать Ninja не нужно — это делают CMake и VS Code (кнопка **Build**), но установлен он должен быть: настройки проекта (`CMakePresets.json`) указывают именно его.
 
 ### Windows
 
@@ -84,6 +84,54 @@ sudo snap install code --classic        # VS Code
 Проекту нужен CMake 3.24 или новее (проверка — в разделе 2). В Ubuntu 24.04 и Debian 12 `apt` ставит подходящую версию, а в Ubuntu 22.04 — 3.22; в этом случае установите CMake из snap: `sudo snap install cmake --classic`.
 
 Если `snap` нет, скачайте пакет VS Code `.deb` со страницы https://code.visualstudio.com и установите его: `sudo apt install ./code_*.deb`. В других дистрибутивах те же программы устанавливаются их менеджером пакетов (в Fedora — `sudo dnf install gcc-c++ gdb cmake ninja-build git gh clang-tools-extra`).
+
+### Другой вариант: контейнер с готовыми инструментами
+
+Вместо установки компилятора, CMake, Ninja, clang-tidy и clang-format можно работать в **контейнере**. Контейнер — запущенная в изолированной среде группа процессов Linux со своей файловой системой; её содержимое берётся из **образа** — неизменяемого набора файлов с уже установленными программами. Контейнеры запускает программа **Docker**; в Windows и macOS она запускает их внутри виртуальной машины Linux. Для курса образ уже собран (Ubuntu 26.04): в нём компилятор Clang 23 — он выбран по умолчанию, — а также g++ 15, gdb, CMake, Ninja, Bazel, clang-tidy и clang-format той же версии, что у преподавателя, и библиотеки Google Test и spdlog. Как запускать контейнер, VS Code узнаёт из папки `.devcontainer/` репозитория. Папка репозитория остаётся на вашем компьютере (или в облаке, способ Б), а в контейнере она видна как `/workspaces/cpp-labs`: файлы, которые вы правите, — те же самые.
+
+Способов два: **А** — Docker на своём компьютере, **Б** — GitHub Codespaces в браузере, на своём компьютере ничего не устанавливается.
+
+**А. Docker на своём компьютере.** Нужно 4 ГБ оперативной памяти, а лучше 8, и около 3 ГБ на диске: образ при первом запуске скачивается (около 350 МБ) и занимает 1,4 ГБ.
+1. Установите Git, GitHub CLI, VS Code и Docker; компилятор, CMake и остальное из начала раздела **не** нужны.
+   - **Windows** (PowerShell):
+     ```powershell
+     winget install Git.Git GitHub.cli Microsoft.VisualStudioCode Docker.DockerDesktop
+     ```
+     Docker Desktop в Windows работает через подсистему WSL 2: если установщик попросит её включить или перезагрузить компьютер, согласитесь. Если Docker Desktop сообщает, что виртуализация отключена (`Virtualization support not detected`), её нужно включить в настройках BIOS/UEFI компьютера (пункт *Intel Virtualization Technology*, *VT-x*, *AMD-V* или *SVM*).
+   - **macOS** (сначала первые две строки и установка Homebrew из блока для macOS выше):
+     ```sh
+     xcode-select --install          # git
+     brew install gh
+     brew install --cask visual-studio-code docker-desktop
+     ```
+   - **Linux** (Debian, Ubuntu):
+     ```sh
+     sudo apt install git gh docker.io
+     sudo snap install code --classic
+     sudo usermod -aG docker $USER   # запуск docker без sudo; действует после выхода из системы и входа
+     ```
+2. Запустите Docker Desktop (в Linux Docker запущен как служба). Пока он не запущен, VS Code не сможет открыть контейнер.
+3. Установите в VS Code расширение **Dev Containers** (`ms-vscode-remote.remote-containers`): `code --install-extension ms-vscode-remote.remote-containers`.
+4. Выполните раздел 4 (Git и GitHub) и раздел 5 (своя копия репозитория) на своём компьютере, как всем. VS Code передаёт в контейнер настройки Git (`user.name`, `user.email` и другие) и вход в GitHub, поэтому в контейнере их повторять не нужно.
+5. Откройте папку `cpp-labs` в VS Code. Внизу справа появится предложение **Reopen in Container** — нажмите его (или `Ctrl+Shift+P` → **Dev Containers: Reopen in Container**). Первый запуск занимает несколько минут: скачивается образ. Признак того, что вы в контейнере, — надпись **Dev Container: cpp-labs** в левом нижнем углу окна. В контейнере установлены расширения C/C++ и CMake Tools, терминал VS Code — это терминал bash в контейнере, пресет сборки — **Debug (GCC/Clang)**.
+
+В следующий раз VS Code откроет папку сразу в контейнере (Docker должен быть запущен). Вернуться к работе без контейнера: `Ctrl+Shift+P` → **Dev Containers: Reopen Folder Locally**. Если вы собираете проект то в контейнере, то без него, перед сменой удалите папку `build/`: CMake запоминает в ней пути и компилятор и в другом окружении остановится с ошибкой.
+
+**Б. GitHub Codespaces — в браузере.** Codespace — такой же контейнер, но он работает на сервере GitHub, а VS Code открывается в браузере. Подходит, если компьютер слабый или чужой (например, в аудитории).
+
+Codespaces бесплатен в пределах **личной** месячной квоты вашего аккаунта GitHub: codespace создаётся в вашем репозитории, и время его работы учитывается у вас, а не у преподавателя или курса. Квота — 120 «ядро-часов» в месяц, то есть 60 часов работы codespace с 2 ядрами, и 15 ГБ хранилища; с [GitHub Student Developer Pack](https://education.github.com/pack) — 180 ядро-часов и 20 ГБ. Сколько израсходовано, показывает страница https://github.com/settings/billing. Если квота закончится, codespace не запустится до следующего месяца; деньги без привязанной карты не списываются. Неработающий codespace останавливается сам через 30 минут, но время учитывается, пока он запущен: закончив, остановите его (**Code → Codespaces → … → Stop codespace**). Остановленный codespace сохраняет файлы, но занимает место в квоте хранилища.
+
+**Остановленный codespace, которым не пользовались 30 дней, GitHub удаляет автоматически** — вместе со всеми изменениями, которые не отправлены в ваш репозиторий на GitHub (неотправленные коммиты удаление не останавливают). Поэтому в конце каждого занятия отправляйте коммиты на GitHub (раздел 7, шаг 4): в ваш репозиторий на GitHub они сохраняются навсегда, а codespace при необходимости можно создать заново.
+1. Сделайте свою приватную копию репозитория без командной строки: на GitHub **+** → **Import repository**, адрес `https://github.com/learn-cpp-coding-from-scratch/cpp-labs.git`, имя `cpp-labs`, видимость **Private** → **Begin import**. Пригласите преподавателя (раздел 5, шаг 3).
+2. На странице своего репозитория: **Code → Codespaces → Create codespace on main**. Первый запуск занимает несколько минут.
+3. В терминале codespace (один раз для каждого codespace) подключите репозиторий преподавателя и задайте настройки Git из раздела 4 (имя и почту GitHub задаёт сам):
+   ```sh
+   git remote add upstream https://github.com/learn-cpp-coding-from-scratch/cpp-labs.git
+   git config --global pull.rebase false
+   git config --global core.editor "code --wait"
+   ```
+   Вход в GitHub для вашего репозитория в codespace уже выполнен.
+4. Дальше — разделы 6–8 как обычно. Изменения хранятся в codespace, пока вы не отправили их в свой репозиторий (**Sync Changes** или `git push`): не удаляйте codespace с неотправленными коммитами.
 
 ## 2. Проверка установки
 
@@ -225,6 +273,58 @@ git push -u origin lab-01             # первая отправка ветки
 
 Как часто коммитить, как писать сообщения коммитов и другие полезные команды Git — в шпаргалке [GIT.md](GIT.md).
 
+### По желанию: решение в виде модуля C++20
+
+В задачах, где рядом с `.hpp` и `.cpp` лежит файл `src/<имя>.cppm.example`, решение можно оформить модулем C++20 (тема 1.5): переименуйте файл в `<имя>.cppm`, а `include/<имя>.hpp` и `src/<имя>.cpp` удалите. CMake сам соберёт задачу из модуля, а тесты подключат его объявлением `import`. Модули собираются не всеми компиляторами:
+
+- **macOS:** Apple Clang модули через CMake не собирает — установите LLVM (`brew install llvm`) и выберите пресет **llvm-debug**;
+- **контейнер:** обычный пресет **debug** — Clang там компилятор по умолчанию;
+- **Linux, WSL:** установите Clang той же версии, что clang-tidy, вместе с `clang-tools` (в нём `clang-scan-deps`) и выберите пресет **clang-debug**;
+- **g++ и MSVC** модули собирают, но clang-tidy их не проверяет — CMake отключит его для такой задачи и выведет предупреждение.
+
+Если модуль у вас не собирается, оставьте решение в `.hpp` и `.cpp`: модули не обязательны.
+
+### По желанию: сборка Bazel вместо CMake
+
+Проект можно собирать системой сборки Bazel (тема 4.1). Установите Bazelisk — он запускает Bazel той версии, что указана в файле `.bazelversion`: Windows — `winget install Bazel.Bazelisk`, macOS — `brew install bazelisk`, Linux — файл `bazelisk-linux-amd64` со страницы [выпусков Bazelisk](https://github.com/bazelbuild/bazelisk/releases), переименованный в `bazel`; в контейнере Bazelisk уже установлен.
+
+Зависимости и флаги уже описаны в `MODULE.bazel` и `.bazelrc`, библиотека `common` — в `common/BUILD.bazel`. Файл `BUILD.bazel` задачи напишите сами, по образцу:
+
+```python
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library", "cc_test")
+
+cc_library(
+    name = "lib",
+    srcs = ["src/missing_digit.cpp"],
+    hdrs = ["include/missing_digit.hpp"],
+    includes = ["include"],
+    deps = ["//common:cpplabs"],
+)
+
+cc_binary(
+    name = "missing-digit",
+    srcs = ["src/missing_digit_main.cpp"],
+    deps = [":lib"],
+)
+
+cc_test(
+    name = "tests",
+    size = "small",
+    srcs = ["tests/open/missing_digit_test.cpp"],
+    deps = [
+        ":lib",
+        "@googletest//:gtest_main",
+    ],
+)
+```
+
+```sh
+bazel test //lab-04_arrays/task-01_missing-digit:all          # тесты задачи
+bazel run  //lab-04_arrays/task-01_missing-digit:missing-digit # программа
+```
+
+Bazel не запускает clang-tidy: стиль проверяйте в VS Code или сборкой CMake. Модули C++20 собирайте только через CMake. Сдаются те же файлы задачи, что и при сборке CMake, — преподаватель проверяет решение через CMake.
+
 ## 8. Сдать лабораторную
 
 Запрос на слияние создаётся, рецензируется и сливается **в браузере, на сайте GitHub** — при любом способе работы с Git (пункты 2, 3 и 5).
@@ -298,7 +398,9 @@ GitHub Desktop и VS Code работают с одной и той же папк
 | macOS: `zsh: command not found: code` | VS Code скачан с сайта: в VS Code `Cmd+Shift+P` → **Shell Command: Install 'code' command in PATH**, затем новое окно терминала |
 | VS Code не предлагает пресеты, нет панели CMake | открыта не корневая папка репозитория или не установлено расширение CMake Tools |
 | Ошибки `#include` в редакторе, хотя проект собирается | `Ctrl+Shift+P` → **CMake: Delete Cache and Reconfigure** |
-| При первой настройке проекта — ошибка загрузки googletest | CMake скачивает библиотеку тестирования из интернета; проверьте подключение и повторите |
+| VS Code: `Docker is not running` или `Cannot connect to the Docker daemon` при **Reopen in Container** | запустите Docker Desktop и повторите; в Linux после `usermod -aG docker` нужно выйти из системы и войти снова |
+| `The current CMakeCache.txt directory … is different` или `Does not match the generator used previously` | проект собирался в другом окружении (в контейнере или без него, на другом компьютере): удалите папку `build/` и повторите настройку |
+| При первой настройке проекта — ошибка загрузки googletest или spdlog | CMake скачивает библиотеки из интернета; проверьте подключение и повторите |
 | `git push` → `Authentication failed`, `Permission … denied` или запрос пароля | войдите в GitHub одним из способов раздела 4, в отдельном терминале — командой `gh auth login`; проверьте командой `git remote -v`, что `origin` указывает на **ваш** репозиторий, а не на репозиторий преподавателя |
 | `git pull` → `Need to specify how to reconcile divergent branches` | выполните `git config --global pull.rebase false` (раздел 4) и повторите |
 | `git push` → `rejected … fetch first` | в репозитории на GitHub есть изменения, которых нет у вас: `git pull`, затем снова `git push` |

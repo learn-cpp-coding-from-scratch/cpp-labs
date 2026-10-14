@@ -1,0 +1,88 @@
+# Сборка образа контейнера разработки (.devcontainer/Dockerfile) и публикация в GitHub
+# Container Registry: ghcr.io/learn-cpp-coding-from-scratch/cpp-labs-dev:<версия>.
+# Версия — тег образа в .devcontainer/devcontainer.json (поле "image"); другого места для неё нет.
+#
+# Новая версия образа: измените Dockerfile и увеличьте тег в devcontainer.json (в cpp-labs-solution,
+# затем make_student.py), сделайте коммит и push. Образ с уже опубликованным тегом не пересобирается:
+# если Dockerfile изменён, а тег прежний, сборка останавливается с ошибкой — иначе у студентов,
+# скачавших образ раньше, остался бы старый образ под тем же тегом.
+#
+# Запуск: push в main с изменениями в .devcontainer/ или вручную (Actions → «Образ контейнера» → Run workflow).
+name: Образ контейнера
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .devcontainer/**
+      - .github/workflows/devcontainer-image.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE: ghcr.io/learn-cpp-coding-from-scratch/cpp-labs-dev
+
+jobs:
+  build:
+    # В копиях репозитория у студентов образ не собирается
+    if: github.repository == 'learn-cpp-coding-from-scratch/cpp-labs'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # вся история: сравнить Dockerfile с предыдущим push
+
+      - name: Версия образа из devcontainer.json
+        id: version
+        run: |
+          image=$(grep -oE '"image": *"[^"]+"' .devcontainer/devcontainer.json | sed -E 's/.*"([^"]+)"$/\1/')
+          tag=${image##*:}
+          if [ "${image%:*}" != "$IMAGE" ] || [ "$tag" = "latest" ] || [ "$tag" = "$image" ]; then
+            echo "::error file=.devcontainer/devcontainer.json::Поле image должно быть $IMAGE:<версия>, а не $image"
+            exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "Образ: $IMAGE:$tag"
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Образ с этой версией уже опубликован?
+        id: check
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if ! docker manifest inspect "$IMAGE:$TAG" > /dev/null 2>&1; then
+            echo "build=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "${{ github.event_name }}" = "push" ] && [ -n "$BEFORE" ] \
+             && git cat-file -e "$BEFORE" 2>/dev/null \
+             && ! git diff --quiet "$BEFORE" HEAD -- .devcontainer/Dockerfile; then
+            echo "::error file=.devcontainer/devcontainer.json::Dockerfile изменён, а образ $IMAGE:$TAG уже опубликован — увеличьте версию в devcontainer.json"
+            exit 1
+          fi
+          echo "::notice::Образ $IMAGE:$TAG уже опубликован, Dockerfile не менялся — сборка не нужна"
+          echo "build=false" >> "$GITHUB_OUTPUT"
+
+      # Образ для двух архитектур: amd64 (Windows, Linux, Mac с Intel) и arm64 (Mac с Apple M);
+      # arm64 собирается в эмуляторе QEMU
+      - uses: docker/setup-qemu-action@v3
+        if: steps.check.outputs.build == 'true'
+      - uses: docker/setup-buildx-action@v3
+        if: steps.check.outputs.build == 'true'
+
+      - uses: docker/build-push-action@v6
+        if: steps.check.outputs.build == 'true'
+        with:
+          context: .devcontainer
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.IMAGE }}:${{ steps.version.outputs.tag }}

@@ -1,0 +1,29 @@
+{
+    // Контейнер разработки (SETUP.md, раздел 1, «Другой вариант: контейнер»): VS Code с расширением Dev Containers
+    // или GitHub Codespaces запускает проект в готовом образе со всеми инструментами курса.
+    // Образ собирается из Dockerfile этой папки GitHub Actions'ом репозитория cpp-labs.
+    // Тег образа — его версия (год.номер), единственное место, где она записана: workflow
+    // собирает образ с этим тегом. Изменили Dockerfile — увеличьте версию: у студентов
+    // VS Code заметит новую конфигурацию, предложит Rebuild и скачает новый образ.
+    "name": "cpp-labs",
+    "image": "ghcr.io/learn-cpp-coding-from-scratch/cpp-labs-dev:2026.1",
+    "remoteUser": "ubuntu",
+
+    // Имя контейнера в Docker — имя папки репозитория (cpp-labs, 11.10_cpp-labs-solution),
+    // а не случайное вроде peaceful_shockley: его видно в docker ps и в OrbStack
+    "runArgs": ["--name", "${localWorkspaceFolderBasename}"],
+
+    // gdb нужно разрешение отлаживать процессы (ptrace), иначе F5 в VS Code не работает
+    "capAdd": ["SYS_PTRACE"],
+    "securityOpt": ["seccomp=unconfined"],
+
+    "customizations": {
+        "vscode": {
+            // Остальные настройки — в .vscode/settings.json, как без контейнера
+            "extensions": [
+                "ms-vscode.cpptools",
+                "ms-vscode.cmake-tools"
+            ]
+        }
+    }
+}
