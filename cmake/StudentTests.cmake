@@ -10,6 +10,11 @@ function(add_student_tests TASK TASK_DIR)
         return()
     endif()
     add_executable(${TASK}-tests-student ${STUDENT_TESTS})
+    # Решение-модуль (cmake/TaskLibrary.cmake): тесты импортируют его, CMake должен искать в них import
+    get_target_property(_definitions ${TASK}-lib INTERFACE_COMPILE_DEFINITIONS)
+    if(_definitions AND "CPPLABS_USE_MODULES" IN_LIST _definitions)
+        set_target_properties(${TASK}-tests-student PROPERTIES CXX_SCAN_FOR_MODULES ON)
+    endif()
     target_link_libraries(${TASK}-tests-student PRIVATE ${TASK}-lib GTest::gtest_main)
     # В тестах числа-ожидания — не «магические»: clang-tidy для тестов отключён
     set_target_properties(${TASK}-tests-student PROPERTIES CXX_CLANG_TIDY "")

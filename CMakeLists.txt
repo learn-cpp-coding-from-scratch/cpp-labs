@@ -13,6 +13,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 include(${CMAKE_SOURCE_DIR}/cmake/Dependencies.cmake)
 # add_student_tests: тесты студента tests/student/ — вызывается в CMakeLists.txt лабораторных
 include(${CMAKE_SOURCE_DIR}/cmake/StudentTests.cmake)
+# add_task_library: библиотека с кодом задачи — заголовок и .cpp или модуль C++20 (по выбору студента)
+include(${CMAKE_SOURCE_DIR}/cmake/TaskLibrary.cmake)
 
 # Предупреждения компилятора
 if(MSVC)
@@ -58,6 +60,7 @@ if(CLANG_FORMAT_EXE)
         ${CMAKE_SOURCE_DIR}/common/*.hpp
         ${CMAKE_SOURCE_DIR}/lab-*/*.cpp
         ${CMAKE_SOURCE_DIR}/lab-*/*.hpp
+        ${CMAKE_SOURCE_DIR}/lab-*/*.cppm
     )
     add_custom_target(format
         COMMAND ${CLANG_FORMAT_EXE} -i ${ALL_CXX_FILES}

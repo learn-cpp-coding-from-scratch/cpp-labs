@@ -22,6 +22,22 @@
             "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
         },
         {
+            "name": "clang-debug",
+            "displayName": "Debug (Clang, модули C++20)",
+            "description": "Clang из PATH (Linux, WSL, контейнер, MSYS2 CLANG64): собирает модули C++20, и clang-tidy их проверяет",
+            "inherits": "base",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "CMAKE_CXX_COMPILER": "clang++" },
+            "condition": { "type": "notEquals", "lhs": "${hostSystemName}", "rhs": "Darwin" }
+        },
+        {
+            "name": "llvm-debug",
+            "displayName": "Debug (LLVM Clang из Homebrew, модули C++20)",
+            "description": "macOS: Apple Clang не собирает модули C++20 через CMake — нужен LLVM Clang (brew install llvm)",
+            "inherits": "base",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "CMAKE_CXX_COMPILER": "/opt/homebrew/opt/llvm/bin/clang++" },
+            "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Darwin" }
+        },
+        {
             "name": "msvc-base",
             "hidden": true,
             "inherits": "base",
@@ -46,6 +62,8 @@
     "buildPresets": [
         { "name": "debug", "configurePreset": "debug" },
         { "name": "release", "configurePreset": "release" },
+        { "name": "clang-debug", "configurePreset": "clang-debug" },
+        { "name": "llvm-debug", "configurePreset": "llvm-debug" },
         { "name": "msvc-debug", "configurePreset": "msvc-debug" },
         { "name": "msvc-release", "configurePreset": "msvc-release" }
     ],
@@ -57,6 +75,8 @@
         },
         { "name": "debug", "inherits": "base", "configurePreset": "debug" },
         { "name": "release", "inherits": "base", "configurePreset": "release" },
+        { "name": "clang-debug", "inherits": "base", "configurePreset": "clang-debug" },
+        { "name": "llvm-debug", "inherits": "base", "configurePreset": "llvm-debug" },
         { "name": "msvc-debug", "inherits": "base", "configurePreset": "msvc-debug" },
         { "name": "msvc-release", "inherits": "base", "configurePreset": "msvc-release" }
     ]
