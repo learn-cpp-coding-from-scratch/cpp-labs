@@ -1,0 +1,22 @@
+# Общая библиотека cpplabs для сборки Bazel — то же, что common/CMakeLists.txt.
+# В задаче подключается так: deps = ["//common:cpplabs"]
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
+
+cc_library(
+    name = "cpplabs",
+    srcs = glob(["src/**/*.cpp"]),
+    hdrs = glob(["include/**/*.hpp"]),
+    includes = ["include"],  # #include <cpplabs/io.hpp>
+    visibility = ["//visibility:public"],
+)
+
+# Тесты общей библиотеки: bazel test //common:tests
+cc_test(
+    name = "tests",
+    size = "small",  # тесты быстрые: Bazel ждёт до 60 секунд, а не 300
+    srcs = glob(["tests/**/*_test.cpp"]),
+    deps = [
+        ":cpplabs",
+        "@googletest//:gtest_main",
+    ],
+)

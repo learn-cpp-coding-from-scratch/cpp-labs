@@ -1,0 +1,11 @@
+# Флаги сборки Bazel — те же, что в корневом CMakeLists.txt: C++20 и предупреждения компилятора
+common --enable_platform_specific_config
+
+build:linux --cxxopt=-std=c++20 --copt=-Wall --copt=-Wextra --copt=-Wpedantic
+build:macos --cxxopt=-std=c++20 --copt=-Wall --copt=-Wextra --copt=-Wpedantic
+# Без этого Bazel собирает для старой macOS, и libc++ предупреждает «platform is no longer supported»
+build:macos --macos_minimum_os=13.0 --host_macos_minimum_os=13.0
+build:windows --cxxopt=/std:c++20 --copt=/W4 --copt=/utf-8
+
+# Упавший тест выводит свои сообщения сразу, как ctest --output-on-failure
+test --test_output=errors

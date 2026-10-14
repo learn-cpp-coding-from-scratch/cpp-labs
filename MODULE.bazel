@@ -1,0 +1,9 @@
+# Сборка Bazel (тема 4.1) — по желанию, вместо CMake. Зависимости скачиваются из
+# Bazel Central Registry (registry.bazel.build); версии — те же, что в cmake/Dependencies.cmake.
+# Библиотека common/ — common/BUILD.bazel; BUILD.bazel задачи студент пишет сам (образец — SETUP.md).
+module(name = "cpp_labs")
+
+bazel_dep(name = "rules_cc", version = "0.2.26")  # cc_library, cc_binary, cc_test: в Bazel 9 не встроены
+bazel_dep(name = "googletest", version = "1.18.0")
+bazel_dep(name = "catch2", version = "3.15.1")
+bazel_dep(name = "spdlog", version = "1.17.0")
