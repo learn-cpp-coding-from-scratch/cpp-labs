@@ -1,6 +1,10 @@
 #include <gtest/gtest.h>
 
+#ifdef CPPLABS_USE_MODULES
+import missing_digit;
+#else
 #include "missing_digit.hpp"
+#endif
 
 // Ваши тесты: проверяйте свои функции на случаях, которые считаете важными,
 // по образцу tests/open/missing_digit_test.cpp. Файлов может быть несколько: tests/student/<имя>_test.cpp.

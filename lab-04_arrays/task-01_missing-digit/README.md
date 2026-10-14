@@ -9,6 +9,7 @@
 | `include/missing_digit.hpp` | объявления функций — не изменяйте |
 | `src/missing_digit.cpp` | решение: тела функций |
 | `src/missing_digit_main.cpp` | программа: ввод данных, вызов функций, вывод |
+| `src/missing_digit.cppm.example` | по желанию — решение в виде модуля C++20: переименуйте в `.cppm`, а `.hpp` и `.cpp` задачи удалите |
 | `tests/open/missing_digit_test.cpp` | открытые тесты — не изменяйте |
 | `tests/student/missing_digit_test.cpp` | ваши тесты: добавляйте сюда |
 

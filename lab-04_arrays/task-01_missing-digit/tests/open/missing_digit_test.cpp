@@ -1,6 +1,10 @@
 #include <gtest/gtest.h>
 
+#ifdef CPPLABS_USE_MODULES
+import missing_digit;
+#else
 #include "missing_digit.hpp"
+#endif
 
 TEST(MissingDigitTest, ZeroMissing)
 {

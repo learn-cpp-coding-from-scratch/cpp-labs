@@ -1,9 +1,9 @@
 # Задача missing-digit
 # TASK — префикс имён целей (например, lab-03-task-02), его задаёт CMakeLists.txt лабораторной
 
-# Код задачи без main — библиотека для программы и для тестов
-add_library(${TASK}-lib src/missing_digit.cpp)
-target_include_directories(${TASK}-lib PUBLIC include)
+# Код задачи без main — библиотека для программы и для тестов:
+# include/ и src/missing_digit.cpp или модуль src/missing_digit.cppm (cmake/TaskLibrary.cmake)
+add_task_library(missing_digit)
 
 # Программа
 add_executable(${TASK}_missing-digit src/missing_digit_main.cpp)
