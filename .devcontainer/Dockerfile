@@ -15,10 +15,11 @@ ARG LLVM_VERSION=23
 ARG GCC_VERSION=15
 ARG GTEST_TAG=v1.18.0
 ARG SPDLOG_TAG=v1.17.0
+ARG CATCH2_TAG=v3.15.1
 ARG BAZELISK_VERSION=v1.29.0
 
 LABEL org.opencontainers.image.source="https://github.com/learn-cpp-coding-from-scratch/cpp-labs"
-LABEL org.opencontainers.image.description="Clang и g++, CMake, Ninja, Bazel, clang-tidy, clang-format, Google Test и spdlog для лабораторных cpp-labs"
+LABEL org.opencontainers.image.description="Clang и g++, CMake, Ninja, Bazel, clang-tidy, clang-format, Google Test, Catch2 и spdlog для лабораторных cpp-labs"
 
 # CC и CXX — компилятор по умолчанию для CMake и Bazel: Clang той же версии, что clang-tidy.
 # Только с ним clang-tidy проверяет решения в виде модулей C++20 (import). g++ тоже установлен:
@@ -67,6 +68,15 @@ RUN curl -fsSL https://github.com/google/googletest/archive/refs/tags/${GTEST_TA
     && cmake --build /tmp/gtest-build \
     && cmake --install /tmp/gtest-build \
     && rm -rf /tmp/googletest-* /tmp/gtest-build
+
+# Catch2 той же версии, что в cmake/Dependencies.cmake: на нём студент может писать свои тесты
+RUN curl -fsSL https://github.com/catchorg/Catch2/archive/refs/tags/${CATCH2_TAG}.tar.gz \
+        | tar -xz -C /tmp \
+    && cmake -S /tmp/Catch2-* -B /tmp/catch2-build -G Ninja \
+        -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF \
+    && cmake --build /tmp/catch2-build \
+    && cmake --install /tmp/catch2-build \
+    && rm -rf /tmp/Catch2-* /tmp/catch2-build
 
 # spdlog той же версии, что в cmake/Dependencies.cmake (со встроенной библиотекой fmt)
 RUN curl -fsSL https://github.com/gabime/spdlog/archive/refs/tags/${SPDLOG_TAG}.tar.gz \
