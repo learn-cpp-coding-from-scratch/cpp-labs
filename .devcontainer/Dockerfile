@@ -87,7 +87,7 @@ RUN curl -fsSL https://github.com/gabime/spdlog/archive/refs/tags/${SPDLOG_TAG}.
     && cmake --install /tmp/spdlog-build \
     && rm -rf /tmp/spdlog-* /tmp/spdlog-build
 
-# Bazelisk — запускает Bazel той версии, что в .bazelversion (сборка Bazel — по желанию, тема 4.1).
+# Bazelisk — запускает Bazel той версии, что в .bazelversion (сборка Bazel — по желанию).
 # Сам Bazel скачивается при первом запуске команды bazel
 RUN curl -fsSL -o /usr/local/bin/bazel \
         https://github.com/bazelbuild/bazelisk/releases/download/${BAZELISK_VERSION}/bazelisk-linux-$(dpkg --print-architecture) \

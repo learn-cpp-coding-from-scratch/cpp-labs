@@ -1,4 +1,4 @@
-# Сборка Bazel (тема 4.1) — по желанию, вместо CMake. Зависимости скачиваются из
+# Сборка Bazel — по желанию, вместо CMake. Зависимости скачиваются из
 # Bazel Central Registry (registry.bazel.build); версии — те же, что в cmake/Dependencies.cmake.
 # Библиотека common/ — common/BUILD.bazel; BUILD.bazel задачи студент пишет сам (образец — SETUP.md).
 module(name = "cpp_labs")

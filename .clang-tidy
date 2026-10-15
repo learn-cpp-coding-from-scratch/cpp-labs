@@ -21,9 +21,9 @@
 #
 # Отключено:
 #   bugprone-easily-swappable-parameters — слишком «шумная» для учебных работ
-#   bugprone-exception-escape            — срабатывает почти на каждой main со строками; исключения — тема 2.5
+#   bugprone-exception-escape            — срабатывает почти на каждой main со строками
 #   modernize-use-trailing-return-type   — курс использует классические сигнатуры
-#   modernize-avoid-c-arrays             — массивы в стиле C изучаются в разделе 2
+#   modernize-avoid-c-arrays             — в курсе есть задачи на массивы в стиле C
 
 Checks: >
   -*,

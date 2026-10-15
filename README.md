@@ -148,7 +148,7 @@ task-04_lattice-points/
 - Внутри `tests/student/` одной задачи имена `TEST(Набор, Тест)` не должны повторяться: все ваши файлы собираются в одну программу, и повтор даст ошибку компоновки (`multiple definition` / `already defined`).
 - Открытые тесты в `tests/open/` не изменяйте.
 
-**Свои тесты на Catch2.** Свои тесты можно писать не только на Google Test, но и на Catch2 (тема 4.4) — в отдельном файле `tests/student/<имя>_test.cpp`. Фреймворк определяется по файлу: если в нём есть `#include <catch2/…>`, файл собирается с Catch2 в цель `<префикс>-tests-student-catch2` (например, `lab-03-task-04-tests-student-catch2`), остальные — с Google Test, как раньше. В одном файле фреймворки не смешивайте. Открытые тесты остаются на Google Test.
+**Свои тесты на Catch2.** Свои тесты можно писать не только на Google Test, но и на Catch2 — в отдельном файле `tests/student/<имя>_test.cpp`. Фреймворк определяется по файлу: если в нём есть `#include <catch2/…>`, файл собирается с Catch2 в цель `<префикс>-tests-student-catch2` (например, `lab-03-task-04-tests-student-catch2`), остальные — с Google Test, как раньше. В одном файле фреймворки не смешивайте. Открытые тесты остаются на Google Test.
 
 ```cpp
 // tests/student/lattice_points_catch2_test.cpp
