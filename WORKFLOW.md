@@ -190,6 +190,7 @@ GitHub Desktop и VS Code работают с одной и той же папк
 | VS Code не предлагает пресеты, нет панели CMake | открыта не корневая папка репозитория или не установлено расширение CMake Tools |
 | Ошибки `#include` в редакторе, хотя проект собирается | `Ctrl+Shift+P` → **CMake: Delete Cache and Reconfigure** |
 | VS Code: `Docker is not running` или `Cannot connect to the Docker daemon` при **Reopen in Container** | запустите Docker Desktop и повторите; в Linux после `usermod -aG docker` нужно выйти из системы и войти снова |
+| **Reopen in Container** или Codespaces: `denied`, `unauthorized` или `403` при скачивании образа `ghcr.io/learn-cpp-coding-from-scratch/cpp-labs-dev` | образ курса недоступен для скачивания — это не ваша ошибка: напишите преподавателю и пока работайте без контейнера ([SETUP.md](SETUP.md), раздел 1) |
 | `The current CMakeCache.txt directory … is different` или `Does not match the generator used previously` | проект собирался в другом окружении (в контейнере или без него, на другом компьютере): удалите папку `build/` и повторите настройку |
 | WSL: сборка очень медленная, VS Code не замечает изменений файлов | репозиторий лежит на диске Windows (путь начинается с `/mnt/c/`): склонируйте его заново в домашнюю папку Linux (`cd ~`, [SETUP.md](SETUP.md), «Другой вариант для Windows: Linux в WSL») |
 | При первой настройке проекта — ошибка загрузки googletest или spdlog | CMake скачивает библиотеки из интернета; проверьте подключение и повторите |
