@@ -5,6 +5,9 @@
     // Тег образа — его версия (год.номер), единственное место, где она записана: workflow
     // собирает образ с этим тегом. Изменили Dockerfile — увеличьте версию: у студентов
     // VS Code заметит новую конфигурацию, предложит Rebuild и скачает новый образ.
+    // Пакет образа на GitHub должен быть публичным (Package settings → Change visibility → Public;
+    // публичные пакеты разрешает владелец организации: Settings → Packages → Package creation),
+    // иначе у студентов скачивание образа остановится с ошибкой denied (WORKFLOW.md, раздел 6).
     "name": "cpp-labs",
     "image": "ghcr.io/learn-cpp-coding-from-scratch/cpp-labs-dev:2026.1",
     "remoteUser": "ubuntu",
