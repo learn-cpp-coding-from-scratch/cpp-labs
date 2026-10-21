@@ -1,0 +1,9 @@
+find_min
+delete 3
+find_min
+delete 3
+find_min
+is_exist 3
+add 1
+is_exist 1
+find_min
