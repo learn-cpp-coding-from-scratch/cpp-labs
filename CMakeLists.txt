@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)                 # -std=c++20, а не -std=gnu++20
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)         # compile_commands.json для clangd в VS Code
 
-# Программы и тесты всех лабораторных — в одной папке build/bin
+# Программы и тесты всех лабораторных — в одной папке build/bin;
+# программы задач с файлами данных — в своих папках build/bin/<задача>/ (cmake/TaskData.cmake)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Google Test подключается до clang-tidy: код библиотеки проверять не нужно
@@ -15,6 +16,8 @@ include(${CMAKE_SOURCE_DIR}/cmake/Dependencies.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake/StudentTests.cmake)
 # add_task_library: библиотека с кодом задачи — заголовок и .cpp или модуль C++20 (по выбору студента)
 include(${CMAKE_SOURCE_DIR}/cmake/TaskLibrary.cmake)
+# add_task_data: папка data/ задачи копируется к её программе — в build/bin/<задача>/
+include(${CMAKE_SOURCE_DIR}/cmake/TaskData.cmake)
 
 # Предупреждения компилятора
 if(MSVC)

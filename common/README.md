@@ -14,6 +14,7 @@ common/
 |---|---|
 | `cpplabs/io.hpp` | `readNumber` — вывести подсказку и прочитать целое число; `printCollection` — вывести элементы коллекции через разделитель (шаблон: подходит для `std::vector`, `std::array`, `std::set`, обычного массива) |
 | `cpplabs/numbers.hpp` | `isNearlyEqual` — приближённое равенство дробных чисел (для проверок `assert` и сравнений) |
+| `cpplabs/paths.hpp` | `executableDirectory` — папка с исполняемым файлом программы; `dataDirectory` — папка `data` рядом с ним (туда сборка копирует `data/` задачи) |
 
 Подключение и вызов — с пространством имён `cpplabs`:
 
