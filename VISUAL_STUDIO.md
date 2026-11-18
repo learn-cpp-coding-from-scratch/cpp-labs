@@ -30,7 +30,7 @@
 
    Нажмите **Install** (**Установить**). Установка занимает 10–30 минут и несколько гигабайт на диске.
 
-   Если Visual Studio уже установлена: запустите **Visual Studio Installer** из меню «Пуск» → **Modify** (**Изменить**) и добавьте недостающее. Там же — **Update** (**Обновить**): проекту нужен CMake 3.24 или новее, он входит в Visual Studio 2022 версии 17.4 и новее.
+   Если Visual Studio уже установлена: запустите **Visual Studio Installer** из меню «Пуск» → **Modify** (**Изменить**) и добавьте недостающее. Там же — **Update** (**Обновить**): проекту нужен CMake 3.28 или новее, он входит в Visual Studio 2022 версии 17.9 и новее.
 3. В **PowerShell** установите Git и GitHub CLI — с ними работают команды из [SETUP.md](SETUP.md) и [WORKFLOW.md](WORKFLOW.md):
    ```powershell
    winget install Git.Git GitHub.cli
@@ -144,7 +144,7 @@ ctest --preset msvc-debug -R "lab-03-task-04\."   # тесты задачи
 | Сообщение или симптом | Что сделать |
 |---|---|
 | Нет списка пресетов, нет пункта **Build All**, Visual Studio не видит проект CMake | открыта не корневая папка репозитория: **File → Open → Folder…** → `cpp-labs`. Или не установлен компонент **C++ CMake tools for Windows** (раздел 1) |
-| `CMake 3.24 or higher is required` | обновите Visual Studio: **Visual Studio Installer → Update** |
+| `CMake 3.28 or higher is required` | обновите Visual Studio: **Visual Studio Installer → Update** |
 | Выбран пресет **Debug (GCC/Clang)**: `No CMAKE_CXX_COMPILER could be found` или не найден `g++` | выберите в списке **Configuration** пресет **Debug (MSVC)** |
 | `clang-tidy не найден — сборка без проверки стиля` | раздел 5 |
 | В обозревателе тестов нет тестов | соберите проект (`Ctrl+Shift+B`); если не помогло — **Project → Delete Cache and Reconfigure** и снова сборка |
