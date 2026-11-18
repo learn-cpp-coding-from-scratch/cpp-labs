@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24)   # 3.24: FIND_PACKAGE_ARGS в cmake/Dependencies.cmake
+cmake_minimum_required(VERSION 3.28)   # 3.28: модули C++20 (cmake/TaskLibrary.cmake)
 project(cpp_labs LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)

@@ -17,11 +17,7 @@ function(add_task_library NAME)
         return()
     endif()
 
-    # Ограничения инструментов для модулей C++20: версии CMake, генератора и компилятора
-    if(CMAKE_VERSION VERSION_LESS 3.28)
-        message(FATAL_ERROR "${TASK}: для модулей C++20 нужен CMake 3.28 или новее (сейчас ${CMAKE_VERSION}). "
-            "Обновите CMake или верните решение в include/${NAME}.hpp и src/${NAME}.cpp.")
-    endif()
+    # Ограничения инструментов для модулей C++20: генератор и компилятор (версию CMake 3.28+ требует корневой CMakeLists.txt)
     if(NOT CMAKE_GENERATOR MATCHES "Ninja|Visual Studio")
         message(FATAL_ERROR "${TASK}: модули C++20 собираются только генератором Ninja или Visual Studio "
             "(сейчас ${CMAKE_GENERATOR}); используйте пресеты из CMakePresets.json.")
